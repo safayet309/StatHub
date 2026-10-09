@@ -1,8 +1,8 @@
 /* StatHub: client-side statistics workspace.
    Add Supabase URL and publishable/anon key below to enable authentication and cloud saves.
    Never put a Supabase service_role key in browser code. */
-const SUPABASE_URL = ""; // e.g. https://YOUR_PROJECT.supabase.co
-const SUPABASE_ANON_KEY = ""; // Supabase publishable/anon key
+const SUPABASE_URL = "https://vslkfqdcevyiehdvkkme.supabase.co"; // e.g. https://YOUR_PROJECT.supabase.co
+const SUPABASE_ANON_KEY = "sb_publishable_3-MNRr_KjxFvC0uRdoJpCg_vp9wTAvB"; // Supabase publishable/anon key
 const supabaseReady = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase);
 const db = supabaseReady ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
