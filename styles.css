@@ -1550,3 +1550,44 @@ dialog::backdrop {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* ---------- Compatibility with the supplied index.html ---------- */
+.main { min-width: 0; min-height: 100vh; margin-left: var(--sidebar-width); }
+.side-label { margin: 13px 12px 9px; color: #8ca4c2; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
+.side-bottom { margin-top: auto; padding: 24px 8px 0; color: #9db2ce; }
+.navigation { display: flex; flex-direction: column; gap: 5px; }
+.nav-item { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 46px; padding: 11px 13px; color: #b8c9df; background: transparent; border: 1px solid transparent; border-radius: 11px; text-align: left; transition: all var(--transition); }
+.nav-item:hover { color: #fff; background: rgba(255,255,255,.07); }
+.nav-item.active { color: #fff; background: linear-gradient(100deg, rgba(49,130,246,.28), rgba(49,130,246,.11)); border-color: rgba(113,176,255,.18); box-shadow: inset 3px 0 0 #56a5ff; }
+.nav-item .nav-icon { display: inline-grid; width: 23px; flex-shrink: 0; place-items: center; font-size: 18px; }
+.mobile-brand { display: none; color: var(--navy); font-weight: 800; }
+.topbar-note { color: var(--text-muted); font-size: 12px; }
+.account-area { display: flex; align-items: center; gap: 14px; }
+.user-label { color: var(--text-muted); font-size: 11px; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 9px 16px; border: 1px solid transparent; border-radius: 10px; font-size: 12px; font-weight: 700; transition: all var(--transition); }
+.button-primary { color: #fff; background: var(--blue); }
+.button-primary:hover { background: var(--blue-dark); }
+.button-light { color: var(--text); background: #fff; border-color: var(--border); }
+.button-small { min-height: 34px; padding: 7px 12px; }
+.content { width: 100%; max-width: 1600px; margin: 0 auto; padding: 30px 32px 42px; }
+.footer { display: flex; justify-content: space-between; gap: 15px; padding: 20px 32px 25px; color: var(--text-muted); border-top: 1px solid var(--border); font-size: 10px; }
+.auth-dialog { width: min(440px, calc(100% - 32px)); padding: 0; overflow-y: auto; color: var(--text); background: #fff; border: 1px solid var(--border); border-radius: 20px; box-shadow: 0 25px 80px rgba(10,28,54,.25); }
+.auth-card { position: relative; padding: 30px; border: 0; }
+.auth-card label { display: block; margin: 14px 0 7px; color: var(--text); font-size: 11px; font-weight: 800; }
+.auth-card input { width: 100%; min-height: 43px; padding: 11px 13px; background: #fbfdff; border: 1px solid #dfe8f2; border-radius: 10px; }
+.dialog-close { position: absolute; top: 15px; right: 15px; display: grid; width: 34px; height: 34px; place-items: center; color: var(--text-muted); background: #f5f8fc; border: 1px solid var(--border); border-radius: 9px; font-size: 20px; }
+.muted { color: var(--text-muted); }
+@media (max-width: 760px) {
+  .sidebar { position: static; width: 100%; height: auto; padding: 14px 15px 12px; overflow: visible; }
+  .brand { padding-bottom: 13px; }
+  .side-label, .side-bottom { display: none; }
+  .navigation { flex-direction: row; gap: 7px; padding: 2px 1px 5px; overflow-x: auto; }
+  .nav-item { width: auto; min-width: max-content; min-height: 39px; padding: 8px 11px; }
+  .main { margin-left: 0; }
+  .mobile-brand { display: block; }
+  .topbar-note { display: none; }
+  .content { padding: 23px 16px 30px; }
+  .footer { flex-direction: column; padding: 18px 17px; }
+  .account-area { gap: 8px; }
+}
