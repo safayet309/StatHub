@@ -1,63 +1,210 @@
-<!doctype html>
+```html
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b2b52">
-  <title>StatHub — Statistics Workspace</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#081F3C">
+    <meta name="description"
+          content="StatHub — Your premium interactive statistics learning workspace.">
+
+    <title>StatHub | Statistics Workspace</title>
+
+    <!-- Premium fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <!-- Application styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Interactive charts -->
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+    <!-- Supabase client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <a class="brand" href="#" aria-label="StatHub home"><span class="brand-mark">▥</span><span>Stat<span>Hub</span></span></a>
-      <div class="side-label">WORKSPACE</div>
-      <nav id="navigation" class="navigation" aria-label="Main navigation">
-        <button class="nav-item active" data-module="home"><span>⌂</span> Overview</button>
-        <button class="nav-item" data-module="descriptive"><span>▥</span> Descriptive statistics</button>
-        <button class="nav-item" data-module="probability"><span>⚄</span> Probability</button>
-        <button class="nav-item" data-module="sampling"><span>∿</span> Sampling distributions</button>
-        <button class="nav-item" data-module="inference"><span>𝑡</span> Inferential statistics</button>
-        <button class="nav-item" data-module="regression"><span>↗</span> Regression analysis</button>
-        <button class="nav-item" data-module="demography"><span>♧</span> Demography</button>
-      </nav>
-      <div class="side-bottom">
-        <div class="connection"><span class="status-dot"></span><span id="connectionText">Local workspace</span></div>
-        <p>Learn · Analyze · Grow</p>
-        <small>StatHub v1.0 · Student edition</small>
-      </div>
-    </aside>
 
-    <main class="main">
-      <header class="topbar">
-        <div class="mobile-brand">▥ StatHub</div>
-        <div class="topbar-note">Your statistics workspace</div>
-        <div class="account-area">
-          <span id="userLabel" class="user-label">Guest mode</span>
-          <button id="authButton" class="button button-light button-small">Sign in</button>
-        </div>
-      </header>
-      <section id="view" class="content" aria-live="polite"></section>
-      <footer class="footer"><span>StatHub</span><span>Built for learning statistics</span><span>GitHub Pages + Supabase</span></footer>
-    </main>
-  </div>
+    <div class="app-shell">
 
-  <dialog id="authDialog" class="auth-dialog">
-    <form id="authForm" class="auth-card">
-      <button type="button" class="dialog-close" id="closeAuth" aria-label="Close">×</button>
-      <div class="eyebrow">YOUR WORKSPACE</div>
-      <h2 id="authTitle">Welcome back</h2>
-      <p class="muted" id="authDescription">Sign in to sync your saved analyses.</p>
-      <label>Email<input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com" required></label>
-      <label>Password<input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="At least 6 characters" required></label>
-      <button class="button button-primary full-width" id="authSubmit" type="submit">Sign in</button>
-      <button class="text-button full-width" id="toggleAuth" type="button">Need an account? Sign up</button>
-      <div id="authMessage" class="message" role="status"></div>
-      <p class="tiny muted">Guest mode works without an account. Supabase login is enabled after setup in <code>app.js</code>.</p>
-    </form>
-  </dialog>
-  <script src="app.js"></script>
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <a href="#" class="brand" aria-label="StatHub home">
+                <span class="brand-mark">Σ</span>
+                <span class="brand-name">
+                    Stat<span>Hub</span>
+                </span>
+            </a>
+
+            <div class="side-label">WORKSPACE</div>
+
+            <nav id="navigation" class="navigation"
+                 aria-label="Statistics modules">
+
+                <button class="nav-item active" data-module="home">
+                    <span class="nav-icon">⌂</span>
+                    Overview
+                </button>
+
+                <button class="nav-item" data-module="descriptive">
+                    <span class="nav-icon">▥</span>
+                    Descriptive Statistics
+                </button>
+
+                <button class="nav-item" data-module="probability">
+                    <span class="nav-icon">⚄</span>
+                    Probability
+                </button>
+
+                <button class="nav-item" data-module="sampling">
+                    <span class="nav-icon">∿</span>
+                    Sampling Distributions
+                </button>
+
+                <button class="nav-item" data-module="inference">
+                    <span class="nav-icon">𝑡</span>
+                    Inferential Statistics
+                </button>
+
+                <button class="nav-item" data-module="regression">
+                    <span class="nav-icon">↗</span>
+                    Regression Analysis
+                </button>
+
+                <button class="nav-item" data-module="demography">
+                    <span class="nav-icon">♧</span>
+                    Demography
+                </button>
+
+            </nav>
+
+            <div class="side-bottom">
+                <div class="connection">
+                    <span class="status-dot"></span>
+                    <span id="connectionText">Guest workspace</span>
+                </div>
+
+                <p>Learn. Analyze. Discover.</p>
+                <small>StatHub · Student Edition</small>
+            </div>
+
+        </aside>
+
+        <!-- MAIN APPLICATION -->
+        <main class="main">
+
+            <header class="topbar">
+
+                <div class="mobile-brand">Σ StatHub</div>
+
+                <div class="topbar-note">
+                    Your statistics workspace
+                </div>
+
+                <div class="account-area">
+                    <span id="userLabel" class="user-label">
+                        Guest mode
+                    </span>
+
+                    <button id="authButton"
+                            class="button button-light button-small">
+                        Sign in
+                    </button>
+                </div>
+
+            </header>
+
+            <!-- JavaScript renders each module here -->
+            <section id="view"
+                     class="content"
+                     aria-live="polite">
+
+                <div class="empty-state">
+                    <strong>Welcome to StatHub</strong>
+                    Your statistics workspace is getting ready.
+                </div>
+
+            </section>
+
+            <footer class="footer">
+                <span>© StatHub</span>
+                <span>Built for university statistics students</span>
+                <span>GitHub Pages · Supabase</span>
+            </footer>
+
+        </main>
+
+    </div>
+
+    <!-- AUTHENTICATION DIALOG -->
+    <dialog id="authDialog" class="auth-dialog">
+
+        <form id="authForm" class="auth-card">
+
+            <button type="button"
+                    class="dialog-close"
+                    id="closeAuth"
+                    aria-label="Close dialog">
+                ×
+            </button>
+
+            <div class="eyebrow">YOUR WORKSPACE</div>
+
+            <h2 id="authTitle">Welcome back</h2>
+
+            <p id="authDescription" class="muted">
+                Sign in to access your workspace.
+            </p>
+
+            <label>
+                Email address
+                <input id="authEmail"
+                       type="email"
+                       autocomplete="email"
+                       placeholder="you@example.com"
+                       required>
+            </label>
+
+            <label>
+                Password
+                <input id="authPassword"
+                       type="password"
+                       autocomplete="current-password"
+                       minlength="6"
+                       placeholder="At least 6 characters"
+                       required>
+            </label>
+
+            <button id="authSubmit"
+                    type="submit"
+                    class="button button-primary full-width">
+                Sign in
+            </button>
+
+            <button id="toggleAuth"
+                    type="button"
+                    class="text-button full-width">
+                Need an account? Sign up
+            </button>
+
+            <div id="authMessage" class="message"></div>
+
+            <p class="tiny muted">
+                You can also use StatHub as a guest.
+            </p>
+
+        </form>
+
+    </dialog>
+
+    <!-- Application logic -->
+    <script src="app.js"></script>
+
 </body>
 </html>
+```
