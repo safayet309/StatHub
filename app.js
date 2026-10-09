@@ -1851,8 +1851,8 @@ Never put a Supabase service_role or secret key in browser code.
 */
 
 const SUPABASE_CONFIG = {
-url: "YOUR_SUPABASE_PROJECT_URL",
-key: "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY"
+url: "https://vslkfqdcevyiehdvkkme.supabase.co",
+key: "sb_publishable_3-MNRr_KjxFvC0uRdoJpCg_vp9wTAvB"
 };
 
 let supabaseClient = null;
