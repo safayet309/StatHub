@@ -1842,200 +1842,258 @@ element.textContent = message;
 }
 
 /* ---------- Supabase Integration ---------- */
-
 /*
-Replace the placeholder values below with your own Supabase
-project URL and publishable/anon key.
-
+Supabase Configuration
 Never put a Supabase service_role or secret key in browser code.
 */
 
 const SUPABASE_CONFIG = {
-url: "https://vslkfqdcevyiehdvkkme.supabase.co",
-key: "sb_publishable_3-MNRr_KjxFvC0uRdoJpCg_vp9wTAvB"
+  url: "https://vslkfqdcevyiehdvkkme.supabase.co",
+  key: "sb_publishable_3-MNRr_KjxFvC0uRdoJpCg_vp9wTAvB"
 };
+
+// GitHub Pages website URL
+const SUPABASE_REDIRECT_URL =
+  "https://safayet309.github.io/StatHub/";
 
 let supabaseClient = null;
 
 function isSupabaseConfigured() {
-return (
-  SUPABASE_CONFIG.url.startsWith("https://") &&
-  !SUPABASE_CONFIG.url.includes("YOUR_SUPABASE") &&
-  SUPABASE_CONFIG.key.length > 20 &&
-  !SUPABASE_CONFIG.key.includes("YOUR_SUPABASE")
-);
+  return (
+    SUPABASE_CONFIG.url.startsWith("https://") &&
+    !SUPABASE_CONFIG.url.includes("YOUR_SUPABASE") &&
+    SUPABASE_CONFIG.key.length > 20 &&
+    !SUPABASE_CONFIG.key.includes("YOUR_SUPABASE")
+  );
 }
 
 function setConnectionStatus(message, status = "offline") {
-const connectionText = $("#connectionText");
+  const connectionText = $("#connectionText");
 
-if (connectionText) {
-  connectionText.textContent = message;
-}
-
-const dot = $(".status-dot");
-
-if (dot) {
-  dot.classList.remove("connected", "error");
-
-  if (status === "connected") {
-    dot.classList.add("connected");
-  } else if (status === "error") {
-    dot.classList.add("error");
+  if (connectionText) {
+    connectionText.textContent = message;
   }
-}
+
+  const dot = $(".status-dot");
+
+  if (dot) {
+    dot.classList.remove("connected", "error");
+
+    if (status === "connected") {
+      dot.classList.add("connected");
+    } else if (status === "error") {
+      dot.classList.add("error");
+    }
+  }
 }
 
 async function initializeSupabase() {
-if (!isSupabaseConfigured()) {
-  setConnectionStatus("Supabase not configured", "offline");
-  updateUserUI(null);
-  return;
-}
-
-if (!window.supabase?.createClient) {
-  setConnectionStatus("Supabase library unavailable", "error");
-  return;
-}
-
-try {
-  supabaseClient = window.supabase.createClient(
-    SUPABASE_CONFIG.url,
-    SUPABASE_CONFIG.key
-  );
-
-  const { data, error } = await supabaseClient.auth.getSession();
-
-  if (error) throw error;
-
-  updateUserUI(data.session?.user || null);
-
-  setConnectionStatus("Supabase connected", "connected");
-
-  supabaseClient.auth.onAuthStateChange((_event, session) => {
-    updateUserUI(session?.user || null);
-  });
-} catch (error) {
-  console.error("Supabase initialization failed:", error);
-  setConnectionStatus("Connection failed", "error");
-}
-}
-
-async function handleAuthSubmit(event) {
-event.preventDefault();
-
-if (!supabaseClient) {
-  setAuthMessage(
-    "Supabase is not configured yet. Add your project URL and public key in app.js.",
-    "error"
-  );
-  return;
-}
-
-const email = $("#authEmail")?.value.trim();
-const password = $("#authPassword")?.value;
-
-if (!email || !password) {
-  setAuthMessage("Enter your email and password.", "error");
-  return;
-}
-
-if (password.length < 6) {
-  setAuthMessage("Password must be at least 6 characters.", "error");
-  return;
-}
-
-const submitButton = $("#authSubmit");
-
-if (submitButton) {
-  submitButton.disabled = true;
-  submitButton.textContent = "Please wait...";
-}
-
-try {
-  let result;
-
-  if (state.authMode === "signup") {
-    result = await supabaseClient.auth.signUp({
-      email,
-      password
-    });
-  } else {
-    result = await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
+  if (!isSupabaseConfigured()) {
+    setConnectionStatus("Supabase not configured", "offline");
+    updateUserUI(null);
+    return;
   }
 
-  if (result.error) throw result.error;
-
-  if (
-    state.authMode === "signup" &&
-    !result.data.session
-  ) {
-    setAuthMessage(
-      "Account created. Check your email to confirm your account before logging in.",
-      "success"
+  if (!window.supabase?.createClient) {
+    setConnectionStatus("Supabase library unavailable", "error");
+    console.error(
+      "Supabase JS library is missing. Check index.html."
     );
     return;
   }
 
-  setAuthMessage("Authentication successful.", "success");
-  closeAuthDialog();
-  showMessage("You are signed in.", "success");
-} catch (error) {
-  setAuthMessage(
-    error.message || "Authentication failed.",
-    "error"
-  );
-} finally {
-  if (submitButton) {
-    submitButton.disabled = false;
-    submitButton.textContent =
-      state.authMode === "signup" ? "Create Account" : "Log In";
+  try {
+    supabaseClient = window.supabase.createClient(
+      SUPABASE_CONFIG.url,
+      SUPABASE_CONFIG.key
+    );
+
+    const { data, error } =
+      await supabaseClient.auth.getSession();
+
+    if (error) throw error;
+
+    updateUserUI(data.session?.user || null);
+
+    setConnectionStatus("Supabase connected", "connected");
+
+    supabaseClient.auth.onAuthStateChange(
+      (_event, session) => {
+        updateUserUI(session?.user || null);
+      }
+    );
+  } catch (error) {
+    console.error("Supabase initialization failed:", error);
+    setConnectionStatus("Connection failed", "error");
   }
 }
-}
 
-async function handleAuthButton() {
-if (state.currentUser && supabaseClient) {
-  const confirmed = window.confirm("Are you sure you want to log out?");
+async function handleAuthSubmit(event) {
+  event.preventDefault();
 
-  if (!confirmed) return;
-
-  const { error } = await supabaseClient.auth.signOut();
-
-  if (error) {
-    showMessage(error.message, "error");
+  if (!supabaseClient) {
+    setAuthMessage(
+      "Supabase is not connected. Please check your configuration.",
+      "error"
+    );
     return;
   }
 
-  updateUserUI(null);
-  showMessage("You have logged out.", "success");
-  return;
+  const email = $("#authEmail")?.value.trim();
+  const password = $("#authPassword")?.value;
+
+  if (!email || !password) {
+    setAuthMessage(
+      "Enter your email and password.",
+      "error"
+    );
+    return;
+  }
+
+  if (password.length < 6) {
+    setAuthMessage(
+      "Password must be at least 6 characters.",
+      "error"
+    );
+    return;
+  }
+
+  const submitButton = $("#authSubmit");
+
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = "Please wait...";
+  }
+
+  try {
+    let result;
+
+    if (state.authMode === "signup") {
+      result = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: SUPABASE_REDIRECT_URL
+        }
+      });
+    } else {
+      result = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+    }
+
+    if (result.error) {
+      throw result.error;
+    }
+
+    if (
+      state.authMode === "signup" &&
+      !result.data.session
+    ) {
+      setAuthMessage(
+        "Account created. Please check your email and confirm your account before logging in.",
+        "success"
+      );
+      return;
+    }
+
+    setAuthMessage(
+      "Authentication successful.",
+      "success"
+    );
+
+    closeAuthDialog();
+
+    showMessage(
+      "You are signed in.",
+      "success"
+    );
+
+  } catch (error) {
+    console.error("Authentication error:", error);
+
+    let message =
+      error.message || "Authentication failed.";
+
+    if (
+      error.message?.toLowerCase().includes("already registered")
+    ) {
+      message =
+        "This email is already registered. Please log in instead.";
+    }
+
+    setAuthMessage(message, "error");
+
+  } finally {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent =
+        state.authMode === "signup"
+          ? "Create Account"
+          : "Log In";
+    }
+  }
 }
 
-openAuthDialog("login");
+async function handleAuthButton() {
+  if (state.currentUser && supabaseClient) {
+    const confirmed = window.confirm(
+      "Are you sure you want to log out?"
+    );
+
+    if (!confirmed) return;
+
+    const { error } =
+      await supabaseClient.auth.signOut();
+
+    if (error) {
+      showMessage(error.message, "error");
+      return;
+    }
+
+    updateUserUI(null);
+
+    showMessage(
+      "You have logged out.",
+      "success"
+    );
+
+    return;
+  }
+
+  openAuthDialog("login");
 }
 
 function initializeAuthUI() {
-$("#authButton")?.addEventListener("click", handleAuthButton);
-
-$("#closeAuth")?.addEventListener("click", closeAuthDialog);
-
-$("#authForm")?.addEventListener("submit", handleAuthSubmit);
-
-$("#toggleAuth")?.addEventListener("click", () => {
-  openAuthDialog(
-    state.authMode === "login" ? "signup" : "login"
+  $("#authButton")?.addEventListener(
+    "click",
+    handleAuthButton
   );
-});
 
-$("#authDialog")?.addEventListener("click", event => {
-  if (event.target === $("#authDialog")) {
-    closeAuthDialog();
-  }
-});
+  $("#closeAuth")?.addEventListener(
+    "click",
+    closeAuthDialog
+  );
+
+  $("#authForm")?.addEventListener(
+    "submit",
+    handleAuthSubmit
+  );
+
+  $("#toggleAuth")?.addEventListener("click", () => {
+    openAuthDialog(
+      state.authMode === "login"
+        ? "signup"
+        : "login"
+    );
+  });
+
+  $("#authDialog")?.addEventListener("click", event => {
+    if (event.target === $("#authDialog")) {
+      closeAuthDialog();
+    }
+  });
 }
 
 /* ---------- App Startup ---------- */
