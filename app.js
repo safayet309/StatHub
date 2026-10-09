@@ -59,20 +59,14 @@ const $$ = (selector, root = document) =>
 Array.from(root.querySelectorAll(selector));
 
 function escapeHTML(value) {
-return String(value).replace(/[&<>"']/g, character => {
-const entities = {
-"&": "&",
-"<": "<",
-">": ">",
-'"': """,
-"'": "'"
-};
-
-```
-return entities[character];
-```
-
-});
+  const entities = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  };
+  return String(value).replace(/[&<>"']/g, character => entities[character]);
 }
 
 function formatNumber(value, digits = APP_CONFIG.decimalPlaces) {
@@ -136,7 +130,7 @@ document.title = `${title} | ${APP_CONFIG.name}`;
 
 function setActiveNavigation(moduleName) {
 
-$$(".nav-button").forEach(button => {
+$$(".nav-item").forEach(button => {
   const active = button.dataset.module === moduleName;
 
   button.classList.toggle("active", active);
@@ -2061,4 +2055,3 @@ document.addEventListener("DOMContentLoaded", initializeApp);
 } else {
 initializeApp();
 }
-$$
